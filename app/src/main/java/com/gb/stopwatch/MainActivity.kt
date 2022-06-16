@@ -4,6 +4,7 @@ import android.os.Bundle
 import android.widget.Button
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
+import com.gb.stopwatch.databinding.ActivityMainBinding
 import kotlinx.coroutines.*
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -30,28 +31,26 @@ class MainActivity : AppCompatActivity() {
                     + SupervisorJob()
         )
     )
-
+lateinit var binding:ActivityMainBinding
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_main)
+        binding = ActivityMainBinding.inflate(layoutInflater)
+        setContentView(binding.root)
 
-        val textView = findViewById<TextView>(R.id.text_time)
+
         CoroutineScope(
-            Dispatchers.Main
-                    + SupervisorJob()
+            Dispatchers.Main + SupervisorJob()
         ).launch {
-            stopwatchListOrchestrator.ticker.collect {
-                textView.text = it
-            }
+            stopwatchListOrchestrator.ticker.collect { binding.textTime.text = it }
         }
 
-        findViewById<Button>(R.id.button_start).setOnClickListener {
+        binding.buttonStart.setOnClickListener {
             stopwatchListOrchestrator.start()
         }
-        findViewById<Button>(R.id.button_pause).setOnClickListener {
+        binding.buttonPause.setOnClickListener {
             stopwatchListOrchestrator.pause()
         }
-        findViewById<Button>(R.id.button_stop).setOnClickListener {
+        binding.buttonStop.setOnClickListener {
             stopwatchListOrchestrator.stop()
         }
 
