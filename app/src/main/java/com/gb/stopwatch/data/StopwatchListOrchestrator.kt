@@ -1,5 +1,6 @@
-package com.gb.stopwatch
+package com.gb.stopwatch.data
 
+import com.gb.stopwatch.domain.StopwatchStateHolder
 import kotlinx.coroutines.*
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
