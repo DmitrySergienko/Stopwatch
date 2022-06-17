@@ -2,9 +2,9 @@ package com.gb.stopwatch.presentation
 
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
-import androidx.lifecycle.Lifecycle
+
 import androidx.lifecycle.coroutineScope
-import androidx.lifecycle.lifecycleScope
+
 import com.gb.stopwatch.data.StopwatchListOrchestrator
 import com.gb.stopwatch.databinding.ActivityMainBinding
 import com.gb.stopwatch.domain.*
@@ -12,9 +12,9 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.flow.collectLatest
-import kotlinx.coroutines.flow.flow
+
 import kotlinx.coroutines.launch
-import org.koin.androidx.scope.lifecycleScope
+
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
 class MainActivity : AppCompatActivity() {
