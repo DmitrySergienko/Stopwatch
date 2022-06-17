@@ -6,26 +6,25 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.gb.stopwatch.data.StopwatchListOrchestrator
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.SupervisorJob
+import com.gb.stopwatch.domain.StopwatchStateHolder
+import kotlinx.coroutines.*
+import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
-import kotlinx.coroutines.launch
-
-private const val DEFAULT_PREVIOUS_TIME = 0.00f
 
 
 class MainActivityViewModel(
-    private val stopwatchListOrchestrator: StopwatchListOrchestrator
-) :
-    ViewModel() {
+    private val stopwatchStateHolder: StopwatchStateHolder
+) : ViewModel() {
 
-    private val timeData: MutableLiveData<StateFlow<String>> by lazy { MutableLiveData<StateFlow<String>>() }
+    private val mutableTicker = MutableStateFlow("")
+    val ticker: StateFlow<String> = mutableTicker
+
 
     fun getTime() = viewModelScope.launch {
-
-        val time = stopwatchListOrchestrator.ticker
-        timeData.postValue(time)
+        while (isActive) {
+            mutableTicker.value = stopwatchStateHolder.getStringTimeRepresentation()
+            delay(20)
+        }
 
     }
 

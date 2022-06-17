@@ -3,23 +3,23 @@ package com.gb.stopwatch.presentation
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.coroutineScope
+import androidx.lifecycle.lifecycleScope
 import com.gb.stopwatch.data.StopwatchListOrchestrator
 import com.gb.stopwatch.databinding.ActivityMainBinding
 import com.gb.stopwatch.domain.*
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.SupervisorJob
+import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.launch
+import org.koin.androidx.scope.lifecycleScope
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
 class MainActivity : AppCompatActivity() {
 
     private val viewModel: MainActivityViewModel by viewModel()
-
-    //to catch exception use coroutineExceptionHandler in first coroutine after scope or in the scope
-    //SupervisorJob() protect scope dropdown
-    private val scope = CoroutineScope(Dispatchers.IO + SupervisorJob())
 
     private val timestampProvider = object : TimestampProvider {
         override fun getMilliseconds(): Long {
@@ -44,15 +44,15 @@ class MainActivity : AppCompatActivity() {
         setContentView(binding.root)
 
 
-        //take out data from flow
-        //scope.launch { stafeflow.collect{
-
-       // } }
-
-        viewModel.getTime().observe(this) {
-            binding.textTime.text = it
+        lifecycle.coroutineScope.launch {
+            viewModel.ticker.collectLatest {
+                binding.textTime.text = it
+            }
         }
 
+        viewModel.getTime()
+
+//
         binding.buttonStart.setOnClickListener {
             stopwatchListOrchestrator.start()
         }
@@ -63,19 +63,7 @@ class MainActivity : AppCompatActivity() {
             stopwatchListOrchestrator.stop()
         }
 
-        //      CoroutineScope(
-        //          Dispatchers.Main + SupervisorJob()
-        //      ).launch { stopwatchListOrchestrator.ticker.collect { binding.textTime.text = it } }
-//
-        //      binding.buttonStart.setOnClickListener {
-        //          stopwatchListOrchestrator.start()
-        //      }
-        //      binding.buttonPause.setOnClickListener {
-        //          stopwatchListOrchestrator.pause()
-        //      }
-        //      binding.buttonStop.setOnClickListener {
-        //          stopwatchListOrchestrator.stop()
-        //      }
+
 
     }
 }

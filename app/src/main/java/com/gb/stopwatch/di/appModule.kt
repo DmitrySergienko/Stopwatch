@@ -12,9 +12,6 @@ import org.koin.dsl.module
 
 val appModule = module {
 
-
-    viewModel { MainActivityViewModel(stopwatchListOrchestrator = get()) }
-
     single {
         val timestampProvider = object : TimestampProvider {
             override fun getMilliseconds(): Long {
@@ -22,15 +19,30 @@ val appModule = module {
             }
         }
 
+        viewModel {
+            MainActivityViewModel(
+                StopwatchStateHolder(
+                    StopwatchStateCalculator(
+                        timestampProvider,
+                        ElapsedTimeCalculator(timestampProvider)
+                    ),
+                    ElapsedTimeCalculator(timestampProvider), TimestampMillisecondsFormatter()
+                )
+            )
+        }
+
+
+
         StopwatchListOrchestrator(
             StopwatchStateHolder(
-                StopwatchStateCalculator(timestampProvider,
+                StopwatchStateCalculator(
+                    timestampProvider,
                     ElapsedTimeCalculator(timestampProvider)
                 ),
                 ElapsedTimeCalculator(timestampProvider), TimestampMillisecondsFormatter()
             ),
             CoroutineScope(Dispatchers.IO + SupervisorJob()),
 
-        )
+            )
     }
 }
