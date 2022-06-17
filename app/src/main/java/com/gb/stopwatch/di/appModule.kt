@@ -7,7 +7,7 @@ import org.koin.dsl.module
 
 val appModule = module {
 
-   viewModel { MainActivityViewModel(stopwatchListOrchestrator = get()) }
+   viewModel { MainActivityViewModel(get()) }
 
 
 }
